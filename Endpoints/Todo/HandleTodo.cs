@@ -1,5 +1,4 @@
 using uwap.WebFramework.Responses;
-using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -94,7 +93,7 @@ public partial class OfficePlugin
                     project.PublicModules.Contains(module.Id)
                         ? new ServerActionButton(
                             new("bi bi-lock", "Make private"),
-                            _ => DialogBuilder.DynamicDialogActionAsync(
+                            _ => DialogBuilder.OpenTask(
                                 page,
                                 "Make private",
                                 [
@@ -110,13 +109,13 @@ public partial class OfficePlugin
                                     {
                                         data.Value.PublicModules.Remove(module.Id);
                                     });
-                                    return new Reload();
+                                    page.Reload();
                                 }
                             )
                         )
                         : new ServerActionButton(
                             new("bi bi-unlock", "Make public"),
-                            _ => DialogBuilder.DynamicDialogActionAsync(
+                            _ => DialogBuilder.OpenTask(
                                 page,
                                 "Make public",
                                 [
@@ -133,7 +132,7 @@ public partial class OfficePlugin
                                         if (!data.Value.PublicModules.Contains(module.Id))
                                             data.Value.PublicModules.Add(module.Id);
                                     });
-                                    return new Reload();
+                                    page.Reload();
                                 }
                             )
                         )
@@ -154,7 +153,7 @@ public partial class OfficePlugin
                 subsection.Content.Add(new Row(
                     new ServerActionButton(
                         new("bi bi-pen", "Edit"),
-                        _ => DialogBuilder.SaveObjectDialogActionAsync(
+                        _ => DialogBuilder.SaveObjectTask(
                             page,
                             item,
                             "Edit item",
@@ -193,12 +192,12 @@ public partial class OfficePlugin
                                 )
                             ],
                             null,
-                            applicator => PersistHierarchyObject(item, table, "todo", applicator, req)
+                            applicator => PersistHierarchyObject(item, table, "todo", applicator, req, page)
                         )
                     ),
                     new ServerActionButton(
                         new("bi bi-trash", "Delete item"),
-                        _ => DialogBuilder.DeleteObjectDialogActionAsync(
+                        _ => DialogBuilder.DeleteObjectTask(
                             page,
                             item,
                             table,
@@ -233,13 +232,14 @@ public partial class OfficePlugin
                 async _ =>
                 {
                     if (nameInput.IsEmpty(out var name))
-                        return DialogBuilder.DynamicErrorAction(page, "Please enter a name for the item.");
-                    
-                    if (await table.NameExistsAsync(projectRef, location, name, null))
-                        return DialogBuilder.DynamicErrorAction(page, "This name already exists in this location.");
-
-                    var newItem = await table.CreateAsync(new(projectRef, location, name, req));
-                    return new Navigate($"{module.Slug}?id={newItem.Id}");
+                        DialogBuilder.Error(page, "Please enter a name for the item.");
+                    else if (await table.NameExistsAsync(projectRef, location, name, null))
+                        DialogBuilder.Error(page, "This name already exists in this location.");
+                    else
+                    {
+                        var newItem = await table.CreateAsync(new(projectRef, location, name, req));
+                        page.Navigate($"{module.Slug}?id={newItem.Id}");
+                    }
                 }
             ));
         

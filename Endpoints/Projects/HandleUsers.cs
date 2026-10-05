@@ -1,5 +1,4 @@
 using uwap.WebFramework.Responses;
-using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -46,8 +45,8 @@ public partial class OfficePlugin
                             tuple.Name,
                             [ tuple.Permission.Level.ToString() ],
                             _ => tuple.Permission.User.Matches(req)
-                            ? DialogBuilder.DynamicErrorActionAsync(page, "You can't manage yourself.")
-                            : DialogBuilder.DynamicDialogActionAsync(
+                            ? DialogBuilder.ErrorTask(page, "You can't manage yourself.")
+                            : DialogBuilder.OpenTask(
                                 page,
                                 "Module member",
                                 [
@@ -67,7 +66,7 @@ public partial class OfficePlugin
                                         new ContinueButton(),
                                         new ServerSubmitButton(
                                             new("bi bi-trash", "Remove"),
-                                            _ => DialogBuilder.DynamicDialogActionAsync(
+                                            _ => DialogBuilder.OpenTask(
                                                 page,
                                                 "Remove member",
                                                 [
@@ -86,7 +85,7 @@ public partial class OfficePlugin
                                                                 perm.User.Equals(tuple.Permission.User) &&
                                                                 perm.Module == module.Id);
                                                         });
-                                                    return new Reload();
+                                                    page.Reload();
                                                 }
                                             )
                                         ),
@@ -102,7 +101,7 @@ public partial class OfficePlugin
                                         data.Value.Permissions.Add(new(tuple.Permission.User, module.Id,
                                             levelInput.Value));
                                     });
-                                    return new Reload();
+                                    page.Reload();
                                 }
                             )
                         ))
@@ -116,15 +115,24 @@ public partial class OfficePlugin
                     async _ =>
                     {
                         if (usernameInput.IsEmpty(out var username))
-                            return DialogBuilder.DynamicErrorAction(page, "Please enter a username.");
+                        {
+                            DialogBuilder.Error(page, "Please enter a username.");
+                            return;
+                        }
                         
                         var user = await req.UserTable.FindByUsernameAsync(username);
                         if (user == null)
-                            return DialogBuilder.DynamicErrorAction(page, "This user does not exist.");
+                        {
+                            DialogBuilder.Error(page, "This user does not exist.");
+                            return;
+                        }
                         
                         var userRef = new UserReference(req.UserTable.Name, user.Id);
                         if (project.Owner.Equals(userRef) || project.Permissions.Any(perm => perm.User.Equals(userRef) && perm.Module == module.Id))
-                            return DialogBuilder.DynamicErrorAction(page, "This user is already a member.");
+                        {
+                            DialogBuilder.Error(page, "This user is already a member.");
+                            return;
+                        }
                         
                         await Projects.TransactionAsync(project.Id, data =>
                         {
@@ -132,7 +140,7 @@ public partial class OfficePlugin
                             data.Value.Permissions.Add(new(userRef, module.Id, PermissionLevel.Read));
                         });
                         
-                        return new Reload();
+                        page.Reload();
                     }
                 )
             ]

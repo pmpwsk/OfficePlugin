@@ -1,4 +1,3 @@
-using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -47,7 +46,7 @@ public partial class OfficePlugin
             subsection.Content.Add(new Row(
                 new ServerActionButton(
                     new("bi bi-pen", "Edit"),
-                    _ => DialogBuilder.SaveObjectDialogActionAsync(
+                    _ => DialogBuilder.SaveObjectTask(
                         page,
                         project,
                         "Edit project",
@@ -68,12 +67,12 @@ public partial class OfficePlugin
                             )
                         ],
                         null,
-                        applicator => PersistOtherObject(project, Projects, "project", applicator)
+                        applicator => PersistOtherObject(project, Projects, "project", applicator, page)
                     )
                 ),
                 new ServerActionButton(
                     new("bi bi-trash", "Delete"),
-                    _ => DialogBuilder.DynamicDialogActionAsync(
+                    _ => DialogBuilder.OpenTask(
                         page,
                         "Delete project",
                         [
@@ -87,7 +86,7 @@ public partial class OfficePlugin
                         {
                             await TodoItems.DeleteForProjectAsync(project);
                             await Projects.DeleteAsync(project);
-                            return new Navigate(".");
+                            page.Navigate(".");
                         }
                     )
                 )
