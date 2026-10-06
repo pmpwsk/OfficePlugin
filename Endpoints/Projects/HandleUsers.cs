@@ -44,66 +44,77 @@ public partial class OfficePlugin
                         .Select(tuple => new BigServerActionButton(
                             tuple.Name,
                             [ tuple.Permission.Level.ToString() ],
-                            _ => tuple.Permission.User.Matches(req)
-                            ? DialogBuilder.ErrorTask(page, "You can't manage yourself.")
-                            : DialogBuilder.OpenTask(
-                                page,
-                                "Module member",
-                                [
-                                    new Paragraph($"User: {tuple.Name}"),
-                                    new Paragraph($"Module: {module.Name}"),
-                                    new DynamicSelector<PermissionLevel>(
-                                        page,
-                                        "Permission level",
-                                        tuple.Permission.Level,
-                                        [
-                                            new(PermissionLevel.Read, "Read", "Only viewing."),
-                                            new(PermissionLevel.Edit, "Edit", "Viewing and editing."),
-                                            new(PermissionLevel.Manage, "Manage", "Viewing, editing and managing.")
-                                        ]
-                                    ).Save(out var levelInput),
-                                    new Row(
-                                        new ContinueButton(),
-                                        new ServerSubmitButton(
-                                            new("bi bi-trash", "Remove"),
-                                            _ => DialogBuilder.OpenTask(
-                                                page,
-                                                "Remove member",
-                                                [
-                                                    new Paragraph("Are you sure you want to remove this member?"),
-                                                    new Row(
-                                                        new ContinueButton(),
-                                                        new DialogBackButton(page)
-                                                    )
-                                                ],
-                                                async _ =>
-                                                {
-                                                    await Projects.TransactionAsync(project.Id,
-                                                        data =>
-                                                        {
-                                                            data.Value.Permissions.RemoveAll(perm =>
-                                                                perm.User.Equals(tuple.Permission.User) &&
-                                                                perm.Module == module.Id);
-                                                        });
-                                                    page.Reload();
-                                                }
-                                            )
-                                        ),
-                                        new DialogCancelButton(page)
-                                    )
-                                ],
-                                async _ =>
+                            _ =>
+                            {
+                                if (tuple.Permission.User.Matches(req))
                                 {
-                                    await Projects.TransactionAsync(project.Id, data =>
-                                    {
-                                        data.Value.Permissions.RemoveAll(perm =>
-                                            perm.User.Equals(tuple.Permission.User) && perm.Module == module.Id);
-                                        data.Value.Permissions.Add(new(tuple.Permission.User, module.Id,
-                                            levelInput.Value));
-                                    });
-                                    page.Reload();
+                                    DialogBuilder.Error(page, "You can't manage yourself.");
+                                    return;
+                                    
                                 }
-                            )
+                                
+                                DialogBuilder.Open(
+                                    page,
+                                    "Module member",
+                                    [
+                                        new Paragraph($"User: {tuple.Name}"),
+                                        new Paragraph($"Module: {module.Name}"),
+                                        new DynamicSelector<PermissionLevel>(
+                                            page,
+                                            "Permission level",
+                                            tuple.Permission.Level,
+                                            [
+                                                new(PermissionLevel.Read, "Read", "Only viewing."),
+                                                new(PermissionLevel.Edit, "Edit", "Viewing and editing."),
+                                                new(PermissionLevel.Manage, "Manage",
+                                                    "Viewing, editing and managing.")
+                                            ]
+                                        ).Save(out var levelInput),
+                                        new Row(
+                                            new ContinueButton(),
+                                            new ServerSubmitButton(
+                                                new("bi bi-trash", "Remove"),
+                                                _ => DialogBuilder.Open(
+                                                    page,
+                                                    "Remove member",
+                                                    [
+                                                        new Paragraph(
+                                                            "Are you sure you want to remove this member?"),
+                                                        new Row(
+                                                            new ContinueButton(),
+                                                            new DialogBackButton(page)
+                                                        )
+                                                    ],
+                                                    async _ =>
+                                                    {
+                                                        await Projects.TransactionAsync(project.Id,
+                                                            data =>
+                                                            {
+                                                                data.Value.Permissions.RemoveAll(perm =>
+                                                                    perm.User.Equals(tuple.Permission.User) &&
+                                                                    perm.Module == module.Id);
+                                                            });
+                                                        page.Reload();
+                                                    }
+                                                )
+                                            ),
+                                            new DialogCancelButton(page)
+                                        )
+                                    ],
+                                    async _ =>
+                                    {
+                                        await Projects.TransactionAsync(project.Id, data =>
+                                        {
+                                            data.Value.Permissions.RemoveAll(perm =>
+                                                perm.User.Equals(tuple.Permission.User) &&
+                                                perm.Module == module.Id);
+                                            data.Value.Permissions.Add(new(tuple.Permission.User, module.Id,
+                                                levelInput.Value));
+                                        });
+                                        page.Reload();
+                                    }
+                                );
+                            }
                         ))
                     ]
                 ),

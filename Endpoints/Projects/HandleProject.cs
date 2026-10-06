@@ -46,7 +46,7 @@ public partial class OfficePlugin
             subsection.Content.Add(new Row(
                 new ServerActionButton(
                     new("bi bi-pen", "Edit"),
-                    _ => DialogBuilder.SaveObjectTask(
+                    _ => DialogBuilder.SaveObject(
                         page,
                         project,
                         "Edit project",
@@ -72,7 +72,7 @@ public partial class OfficePlugin
                 ),
                 new ServerActionButton(
                     new("bi bi-trash", "Delete"),
-                    _ => DialogBuilder.OpenTask(
+                    _ => DialogBuilder.Open(
                         page,
                         "Delete project",
                         [

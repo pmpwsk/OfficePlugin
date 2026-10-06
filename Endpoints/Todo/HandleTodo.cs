@@ -93,7 +93,7 @@ public partial class OfficePlugin
                     project.PublicModules.Contains(module.Id)
                         ? new ServerActionButton(
                             new("bi bi-lock", "Make private"),
-                            _ => DialogBuilder.OpenTask(
+                            _ => DialogBuilder.Open(
                                 page,
                                 "Make private",
                                 [
@@ -115,7 +115,7 @@ public partial class OfficePlugin
                         )
                         : new ServerActionButton(
                             new("bi bi-unlock", "Make public"),
-                            _ => DialogBuilder.OpenTask(
+                            _ => DialogBuilder.Open(
                                 page,
                                 "Make public",
                                 [
@@ -153,7 +153,7 @@ public partial class OfficePlugin
                 subsection.Content.Add(new Row(
                     new ServerActionButton(
                         new("bi bi-pen", "Edit"),
-                        _ => DialogBuilder.SaveObjectTask(
+                        _ => DialogBuilder.SaveObject(
                             page,
                             item,
                             "Edit item",
@@ -197,7 +197,7 @@ public partial class OfficePlugin
                     ),
                     new ServerActionButton(
                         new("bi bi-trash", "Delete item"),
-                        _ => DialogBuilder.DeleteObjectTask(
+                        _ => DialogBuilder.DeleteObject(
                             page,
                             item,
                             table,
