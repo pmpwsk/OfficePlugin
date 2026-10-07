@@ -1,4 +1,5 @@
 using uwap.WebFramework.Responses;
+using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -47,11 +48,7 @@ public partial class OfficePlugin
                             _ =>
                             {
                                 if (tuple.Permission.User.Matches(req))
-                                {
-                                    DialogBuilder.Error(page, "You can't manage yourself.");
-                                    return;
-                                    
-                                }
+                                    throw new ForcedActionError("You can't manage yourself.");
                                 
                                 DialogBuilder.Open(
                                     page,
@@ -126,24 +123,15 @@ public partial class OfficePlugin
                     async _ =>
                     {
                         if (usernameInput.IsEmpty(out var username))
-                        {
-                            DialogBuilder.Error(page, "Please enter a username.");
-                            return;
-                        }
+                            throw new ForcedActionError("Please enter a username.");
                         
                         var user = await req.UserTable.FindByUsernameAsync(username);
                         if (user == null)
-                        {
-                            DialogBuilder.Error(page, "This user does not exist.");
-                            return;
-                        }
+                            throw new ForcedActionError("This user does not exist.");
                         
                         var userRef = new UserReference(req.UserTable.Name, user.Id);
                         if (project.Owner.Equals(userRef) || project.Permissions.Any(perm => perm.User.Equals(userRef) && perm.Module == module.Id))
-                        {
-                            DialogBuilder.Error(page, "This user is already a member.");
-                            return;
-                        }
+                            throw new ForcedActionError("This user is already a member.");
                         
                         await Projects.TransactionAsync(project.Id, data =>
                         {

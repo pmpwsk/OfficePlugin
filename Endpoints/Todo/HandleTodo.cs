@@ -1,4 +1,5 @@
 using uwap.WebFramework.Responses;
+using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -232,14 +233,13 @@ public partial class OfficePlugin
                 async _ =>
                 {
                     if (nameInput.IsEmpty(out var name))
-                        DialogBuilder.Error(page, "Please enter a name for the item.");
-                    else if (await table.NameExistsAsync(projectRef, location, name, null))
-                        DialogBuilder.Error(page, "This name already exists in this location.");
-                    else
-                    {
-                        var newItem = await table.CreateAsync(new(projectRef, location, name, req));
-                        page.Navigate($"{module.Slug}?id={newItem.Id}");
-                    }
+                        throw new ForcedActionError("Please enter a name for the item.");
+                    
+                    if (await table.NameExistsAsync(projectRef, location, name, null))
+                        throw new ForcedActionError("This name already exists in this location.");
+                    
+                    var newItem = await table.CreateAsync(new(projectRef, location, name, req));
+                    page.Navigate($"{module.Slug}?id={newItem.Id}");
                 }
             ));
         

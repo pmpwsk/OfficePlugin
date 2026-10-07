@@ -1,3 +1,4 @@
+using uwap.WebFramework.Responses.Actions;
 using uwap.WebFramework.Responses.DefaultUI;
 
 namespace uwap.WebFramework.Plugins;
@@ -39,10 +40,7 @@ public partial class OfficePlugin
                     async _ =>
                     {
                         if (nameInput.IsEmpty(out var name))
-                        {
-                            DialogBuilder.Error(page, "Please enter a name for the project.");
-                            return;
-                        }
+                            throw new ForcedActionError("Please enter a name for the project.");
 
                         var newItem = await Projects.CreateAsync(new(name, req));
                         page.Navigate($"project?id={newItem.Id}");
