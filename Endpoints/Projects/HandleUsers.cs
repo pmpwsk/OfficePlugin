@@ -44,7 +44,7 @@ public partial class OfficePlugin
                         ..(await project.ListPermissionsByModuleAsync(module.Id, req))
                         .Select(tuple => new BigServerActionButton(
                             tuple.Name,
-                            [ tuple.Permission.Level.ToString() ],
+                            tuple.Permission.Level.ToString(),
                             _ =>
                             {
                                 if (tuple.Permission.User.Matches(req))
