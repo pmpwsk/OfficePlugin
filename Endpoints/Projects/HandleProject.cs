@@ -96,7 +96,7 @@ public partial class OfficePlugin
             if (project.CheckPermission(req, module.Id, PermissionLevel.Read))
                 subsection.Content.Add(new BigLinkButton(
                     module.Name,
-                    [module.Description],
+                    module.Description,
                     $"{module.Slug}?project={project.Id}"
                 ));
         

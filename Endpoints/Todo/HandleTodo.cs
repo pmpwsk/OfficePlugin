@@ -218,7 +218,7 @@ public partial class OfficePlugin
                 pair.Status.ToString(),
                 pair.Items.Select(child => new BigLinkButton(
                     child.Name,
-                    [ FormatDate(child.CreationDate) ],
+                    FormatDate(child.CreationDate),
                     $"{module.Slug}?id={child.Id}"
                 ))
             ));

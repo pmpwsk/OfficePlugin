@@ -26,7 +26,7 @@ public partial class OfficePlugin
                         ..await projects.SelectAsync(async project
                             => new BigLinkButton(
                                 project.Name,
-                                [await project.Owner.GetAnyNameAsync(req)],
+                                await project.Owner.GetAnyNameAsync(req),
                                 $"project?id={project.Id}"
                             )
                         ).ToListAsync()
