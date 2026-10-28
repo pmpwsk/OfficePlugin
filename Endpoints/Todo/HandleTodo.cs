@@ -101,7 +101,7 @@ public partial class OfficePlugin
                                     new Paragraph("Are you sure you want to make this module private?"),
                                     new Row(
                                         new ContinueButton(),
-                                        new DialogCancelButton(page)
+                                        new DialogBackButton(page)
                                     )
                                 ],
                                 async _ =>
@@ -123,7 +123,7 @@ public partial class OfficePlugin
                                     new Paragraph("Are you sure you want to make this module public?"),
                                     new Row(
                                         new ContinueButton(),
-                                        new DialogCancelButton(page)
+                                        new DialogBackButton(page)
                                     )
                                 ],
                                 async _ =>

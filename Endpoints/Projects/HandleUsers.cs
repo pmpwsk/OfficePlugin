@@ -95,7 +95,7 @@ public partial class OfficePlugin
                                                     }
                                                 )
                                             ),
-                                            new DialogCancelButton(page)
+                                            new DialogBackButton(page)
                                         )
                                     ],
                                     async _ =>

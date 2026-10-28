@@ -79,7 +79,7 @@ public partial class OfficePlugin
                             new Paragraph($"Are you sure you want to delete \"{project.Name}\"?"),
                             new Row(
                                 new ContinueButton(),
-                                new DialogCancelButton(page)
+                                new DialogBackButton(page)
                             )
                         ],
                         async _ =>
