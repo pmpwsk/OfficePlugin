@@ -86,7 +86,7 @@ public partial class OfficePlugin
                         {
                             await TodoItems.DeleteForProjectAsync(project);
                             await Projects.DeleteAsync(project);
-                            page.Navigate(".");
+                            await page.NavigateAsync(".");
                         }
                     )
                 )

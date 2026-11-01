@@ -91,7 +91,7 @@ public partial class OfficePlugin
                                                                     perm.User.Equals(tuple.Permission.User) &&
                                                                     perm.Module == module.Id);
                                                             });
-                                                        page.Reload();
+                                                        await page.ReloadAsync();
                                                     }
                                                 )
                                             ),
@@ -108,7 +108,7 @@ public partial class OfficePlugin
                                             data.Value.Permissions.Add(new(tuple.Permission.User, module.Id,
                                                 levelInput.Value));
                                         });
-                                        page.Reload();
+                                        await page.ReloadAsync();
                                     }
                                 );
                             }
@@ -139,7 +139,7 @@ public partial class OfficePlugin
                             data.Value.Permissions.Add(new(userRef, module.Id, PermissionLevel.Read));
                         });
                         
-                        page.Reload();
+                        await page.ReloadAsync();
                     }
                 )
             ]

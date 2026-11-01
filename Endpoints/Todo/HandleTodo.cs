@@ -110,7 +110,7 @@ public partial class OfficePlugin
                                     {
                                         data.Value.PublicModules.Remove(module.Id);
                                     });
-                                    page.Reload();
+                                    await page.ReloadAsync();
                                 }
                             )
                         )
@@ -133,7 +133,7 @@ public partial class OfficePlugin
                                         if (!data.Value.PublicModules.Contains(module.Id))
                                             data.Value.PublicModules.Add(module.Id);
                                     });
-                                    page.Reload();
+                                    await page.ReloadAsync();
                                 }
                             )
                         )
@@ -239,7 +239,7 @@ public partial class OfficePlugin
                         throw new ForcedActionError("This name already exists in this location.");
                     
                     var newItem = await table.CreateAsync(new(projectRef, location, name, req));
-                    page.Navigate($"{module.Slug}?id={newItem.Id}");
+                    await page.NavigateAsync($"{module.Slug}?id={newItem.Id}");
                 }
             ));
         

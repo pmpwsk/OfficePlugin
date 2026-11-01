@@ -23,12 +23,12 @@ public partial class OfficePlugin
         {
             applicator(obj);
             await table.CreateAsync(obj);
-            page.Navigate($"{slug}?id={obj.Id}");
+            await page.NavigateAsync($"{slug}?id={obj.Id}");
         }
         else
         {
             await table.ModifyAsync(obj.Id, req, data => applicator(data.Value));
-            page.Reload();
+            await page.ReloadAsync();
         }
     }
     
@@ -38,12 +38,12 @@ public partial class OfficePlugin
         {
             applicator(obj);
             await table.CreateAsync(obj);
-            page.Navigate($"{slug}?id={obj.Id}");
+            await page.NavigateAsync($"{slug}?id={obj.Id}");
         }
         else
         {
             await table.TransactionAsync(obj.Id, data => applicator(data.Value));
-            page.Reload();
+            await page.ReloadAsync();
         }
     }
 }

@@ -43,7 +43,7 @@ public partial class OfficePlugin
                             throw new ForcedActionError("Please enter a name for the project.");
 
                         var newItem = await Projects.CreateAsync(new(name, req));
-                        page.Navigate($"project?id={newItem.Id}");
+                        await page.NavigateAsync($"project?id={newItem.Id}");
                     }
                 )
             ]
