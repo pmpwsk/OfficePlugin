@@ -122,8 +122,7 @@ public partial class OfficePlugin
                     ],
                     async _ =>
                     {
-                        if (usernameInput.IsEmpty(out var username))
-                            throw new ForcedActionError("Please enter a username.");
+                        var username = usernameInput.Value;
                         
                         var user = await req.UserTable.FindByUsernameAsync(username);
                         if (user == null)

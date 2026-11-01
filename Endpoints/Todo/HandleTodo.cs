@@ -182,7 +182,6 @@ public partial class OfficePlugin
                                     TextBoxRole.NoAutocomplete,
                                     "todo-name",
                                     "Enter a name...",
-                                    "Please enter a name.",
                                     async value =>
                                     {
                                         if (await table.NameExistsAsync(item.Project, item.Parent, value, item.IdNullable))
@@ -232,8 +231,7 @@ public partial class OfficePlugin
                 ],
                 async _ =>
                 {
-                    if (nameInput.IsEmpty(out var name))
-                        throw new ForcedActionError("Please enter a name for the item.");
+                    var name = nameInput.Value;
                     
                     if (await table.NameExistsAsync(projectRef, location, name, null))
                         throw new ForcedActionError("This name already exists in this location.");

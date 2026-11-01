@@ -56,7 +56,6 @@ public partial class OfficePlugin
                                 TextBoxRole.NoAutocomplete,
                                 "project-name",
                                 "Enter a name...",
-                                "Please enter a name.",
                                 async value =>
                                 {
                                     if (await Projects.NameExistsAsync(value, project.IdNullable))

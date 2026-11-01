@@ -39,9 +39,7 @@ public partial class OfficePlugin
                     ],
                     async _ =>
                     {
-                        if (nameInput.IsEmpty(out var name))
-                            throw new ForcedActionError("Please enter a name for the project.");
-
+                        var name = nameInput.Value;
                         var newItem = await Projects.CreateAsync(new(name, req));
                         await page.NavigateAsync($"project?id={newItem.Id}");
                     }
