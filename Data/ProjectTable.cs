@@ -6,10 +6,8 @@ namespace uwap.WebFramework.Plugins;
 /// <summary>
 /// A table containing projects.
 /// </summary>
-public class ProjectTable(
-    string name,
-    List<ClusterNode> clusterNodes
-) : AbstractOfficeTable<Project>(name, clusterNodes)
+public class ProjectTable(string name, List<ClusterNode> clusterNodes)
+    : AbstractOfficeTable<Project>(name, clusterNodes)
 {
     protected readonly TableValueCache<Project,string> NameCache = new(obj => obj.Name);
 
@@ -21,9 +19,6 @@ public class ProjectTable(
 
     protected override IEnumerable<ITableIndex<Project>> Indices
         => [ ..base.Indices, NameCache, UsersWithAnyPermissionIndex ];
-
-    public new static ProjectTable Import(string name, List<ClusterNode> clusterNodes)
-        => Tables.TryGetTable<ProjectTable>(name) ?? new ProjectTable(name, clusterNodes);
 
     public override ulong TypeIteration
         => 1;

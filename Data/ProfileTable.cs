@@ -6,23 +6,15 @@ namespace uwap.WebFramework.Plugins;
 /// <summary>
 /// A table containing user profiles.
 /// </summary>
-public class ProfileTable(
-    string name,
-    List<ClusterNode> clusterNodes,
-    ProjectTable projectTable
-) : AbstractOfficeTable<Profile>(name, clusterNodes)
+public class ProfileTable(string name, List<ClusterNode> clusterNodes)
+    : AbstractOfficeTable<Profile>(name, clusterNodes)
 {
-    private ProjectTable ProjectTable = projectTable;
-    
     /// <summary>
     /// Index to find user profiles by their user reference.
     /// </summary>
     public UniqueTableIndex<Profile, UserReference> UserIndex = new(profile => profile.User);
 
     protected override IEnumerable<ITableIndex<Profile>> Indices => [ UserIndex ];
-        
-    public static ProfileTable Import(string name, List<ClusterNode> clusterNodes, ProjectTable projectTable)
-        => Tables.TryGetTable<ProfileTable>(name) ?? new ProfileTable(name, clusterNodes, projectTable);
 
     public override ulong TypeIteration
         => 1;
@@ -43,7 +35,8 @@ public class ProfileTable(
         
         if (profile == null)
         {
-            var project = await ProjectTable.CreateAsync("Personal", userReference);
+            var project = await Tables.GetTable<ProjectTable>(OfficePlugin.ProjectTableName)
+                .CreateAsync("Personal", userReference);
             profile = await CreateAsync(new Profile(userReference, new(project)));
         }
         

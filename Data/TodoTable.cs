@@ -5,15 +5,9 @@ namespace uwap.WebFramework.Plugins;
 /// <summary>
 /// A table containing to-do items.
 /// </summary>
-public class TodoTable(
-    string name,
-    List<ClusterNode> clusterNodes,
-    ProjectTable projectTable
-) : AbstractHierarchyTable<TodoItem>(name, clusterNodes, projectTable)
+public class TodoTable(string name, List<ClusterNode> clusterNodes)
+    : AbstractHierarchyTable<TodoItem>(name, clusterNodes)
 {
-    public static TodoTable Import(string name, List<ClusterNode> clusterNodes, ProjectTable projectTable)
-        => Tables.TryGetTable<TodoTable>(name) ?? new TodoTable(name, clusterNodes, projectTable);
-
     public override ulong TypeIteration
         => 1;
 

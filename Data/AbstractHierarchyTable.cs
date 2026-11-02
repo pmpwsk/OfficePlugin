@@ -7,14 +7,10 @@ namespace uwap.WebFramework.Plugins;
 /// <summary>
 /// An abstract table for entries within an object hierarchy. 
 /// </summary>
-public abstract class AbstractHierarchyTable<T>(
-    string name,
-    List<ClusterNode> clusterNodes,
-    ProjectTable projectTable
-) : AbstractOfficeTable<T>(name, clusterNodes) where T : AbstractHierarchyValue<T>
+public abstract class AbstractHierarchyTable<T>(string name, List<ClusterNode> clusterNodes)
+    : AbstractOfficeTable<T>(name, clusterNodes)
+    where T : AbstractHierarchyValue<T>
 {
-    protected ProjectTable ProjectTable = projectTable;
-    
     protected abstract Module Module { get; }
     
     /// <summary>
