@@ -48,7 +48,9 @@ public partial class OfficePlugin
                     new("bi bi-pen", "Edit"),
                     _ => DialogBuilder.SaveObject(
                         page,
+                        Projects,
                         project,
+                        "project?id=",
                         "Edit project",
                         [
                             new RequiredTextBoxBuilder<Project>(
@@ -64,29 +66,18 @@ public partial class OfficePlugin
                                     return null;
                                 }
                             )
-                        ],
-                        null,
-                        applicator => PersistOtherObject(project, Projects, "project", applicator, page)
+                        ]
                     )
                 ),
                 new ServerActionButton(
                     new("bi bi-trash", "Delete"),
-                    _ => DialogBuilder.Open(
+                    _ => DialogBuilder.DeleteObject(
                         page,
+                        project,
+                        Projects,
+                        ".",
                         "Delete project",
-                        [
-                            new Paragraph($"Are you sure you want to delete \"{project.Name}\"?"),
-                            new Row(
-                                new ContinueButton(),
-                                new DialogBackButton(page)
-                            )
-                        ],
-                        async _ =>
-                        {
-                            await TodoItems.DeleteForProjectAsync(project);
-                            await Projects.DeleteAsync(project);
-                            await page.NavigateAsync(".");
-                        }
+                        project.Name
                     )
                 )
             ));

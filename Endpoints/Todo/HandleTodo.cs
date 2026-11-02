@@ -156,7 +156,9 @@ public partial class OfficePlugin
                         new("bi bi-pen", "Edit"),
                         _ => DialogBuilder.SaveObject(
                             page,
+                            table,
                             item,
+                            "todo?id=",
                             "Edit item",
                             [
                                 new SelectorBuilder<TodoItem, TodoStatus>(
@@ -190,9 +192,7 @@ public partial class OfficePlugin
                                         return null;
                                     }
                                 )
-                            ],
-                            null,
-                            applicator => PersistHierarchyObject(item, table, "todo", applicator, req, page)
+                            ]
                         )
                     ),
                     new ServerActionButton(
@@ -201,11 +201,11 @@ public partial class OfficePlugin
                             page,
                             item,
                             table,
-                            "Delete",
-                            item.Name,
                             item.Parent == null
                                 ? $"{module.Slug}?project={item.Project.Id}"
-                                : $"{module.Slug}?id={item.Parent.Id}"
+                                : $"{module.Slug}?id={item.Parent.Id}",
+                            "Delete",
+                            item.Name
                         )
                     )
                 ));

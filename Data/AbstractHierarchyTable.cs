@@ -1,5 +1,6 @@
 ﻿using uwap.WebFramework.Database;
 using uwap.WebFramework.Responses;
+using uwap.WebFramework.Tools;
 
 namespace uwap.WebFramework.Plugins;
 
@@ -129,27 +130,13 @@ public abstract class AbstractHierarchyTable<T>(
             .Select(pair => pair.Item)
             .ToList();
     }
-    
-    /// <summary>
-    /// Modifies the object with the given ID by applying the given action.
-    /// </summary>
-    public Task ModifyAsync(string id, Request req, TransactionDelegate<T> action)
-        => TransactionAsync(id, data =>
-        {
-            action(data);
-            data.Value.ModificationDate = DateTime.UtcNow;
-            data.Value.ModificationUser = new(req);
-        });
-    
-    /// <summary>
-    /// Sets the name of the object with the given ID to the given value.
-    /// </summary>
-    public Task RenameAsync(string id, string newName, Request req)
-        => ModifyAsync(id, req, data => data.Value.Name = newName);
-    
-    /// <summary>
-    /// Sets the parent of the object with the given ID to the given value.
-    /// </summary>
-    public Task MoveAsync(string id, TableReference<T>? newParentRef, Request req)
-        => ModifyAsync(id, req, data => data.Value.Parent = newParentRef);
+
+    public override ModifyTransactionData StartModifying(ref T value)
+    {
+        var req = Dependencies.Get<Request>();
+        var result = base.StartModifying(ref value);
+        value.ModificationDate = DateTime.UtcNow;
+        value.ModificationUser = new(req);
+        return result;
+    }
 }

@@ -68,4 +68,10 @@ public class ProjectTable(
         
         return false;
     }
+
+    public override async Task DeleteAsync(Project value)
+    {
+        await Tables.GetTable<TodoTable>(OfficePlugin.TodoTableName).DeleteForProjectAsync(value);
+        await base.DeleteAsync(value);
+    }
 }

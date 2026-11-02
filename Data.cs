@@ -1,7 +1,4 @@
-﻿using uwap.WebFramework.Database;
-using uwap.WebFramework.Responses.DefaultUI;
-
-namespace uwap.WebFramework.Plugins;
+﻿namespace uwap.WebFramework.Plugins;
 
 public partial class OfficePlugin
 {   
@@ -16,34 +13,4 @@ public partial class OfficePlugin
     
     public static string FormatDate(DateTime utc)
         => $"{utc.ToLongDateString()}";
-    
-    private static async Task PersistHierarchyObject<C>(C obj, AbstractHierarchyTable<C> table, string slug, Action<C> applicator, Request req, Page page) where C : AbstractHierarchyValue<C>
-    {
-        if (obj.IdNullable == null)
-        {
-            applicator(obj);
-            await table.CreateAsync(obj);
-            await page.NavigateAsync($"{slug}?id={obj.Id}");
-        }
-        else
-        {
-            await table.ModifyAsync(obj.Id, req, data => applicator(data.Value));
-            await page.ReloadAsync();
-        }
-    }
-    
-    private static async Task PersistOtherObject<C>(C obj, Table<C> table, string slug, Action<C> applicator, Page page) where C : AbstractTableValue
-    {
-        if (obj.IdNullable == null)
-        {
-            applicator(obj);
-            await table.CreateAsync(obj);
-            await page.NavigateAsync($"{slug}?id={obj.Id}");
-        }
-        else
-        {
-            await table.TransactionAsync(obj.Id, data => applicator(data.Value));
-            await page.ReloadAsync();
-        }
-    }
 }
