@@ -7,7 +7,7 @@ namespace uwap.WebFramework.Plugins;
 /// A table containing user profiles.
 /// </summary>
 public class ProfileTable(string name, List<ClusterNode> clusterNodes)
-    : AbstractOfficeTable<Profile>(name, clusterNodes)
+    : Table<Profile>(name, clusterNodes)
 {
     /// <summary>
     /// Index to find user profiles by their user reference.

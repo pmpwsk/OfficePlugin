@@ -7,7 +7,7 @@ namespace uwap.WebFramework.Plugins;
 /// A table containing projects.
 /// </summary>
 public class ProjectTable(string name, List<ClusterNode> clusterNodes)
-    : AbstractOfficeTable<Project>(name, clusterNodes)
+    : Table<Project>(name, clusterNodes)
 {
     protected readonly TableValueCache<Project,string> NameCache = new(obj => obj.Name);
 

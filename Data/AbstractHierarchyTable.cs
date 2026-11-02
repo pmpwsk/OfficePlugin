@@ -8,7 +8,7 @@ namespace uwap.WebFramework.Plugins;
 /// An abstract table for entries within an object hierarchy. 
 /// </summary>
 public abstract class AbstractHierarchyTable<T>(string name, List<ClusterNode> clusterNodes)
-    : AbstractOfficeTable<T>(name, clusterNodes)
+    : Table<T>(name, clusterNodes)
     where T : AbstractHierarchyValue<T>
 {
     protected abstract Module Module { get; }
